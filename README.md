@@ -3,9 +3,9 @@ How to use sudo -h This command
 
 วิธีใช้ sudo -h คำสั่งตามนี้
 
-วิธีติดตั้ง(ห้ามใส่ในดาวโหลด)
+วิธีติดตั้ง
 
-Installation method (Do not include in download)
+Installation method
 
 คัดลอกได้ตามลูกศร
 
