@@ -7,5 +7,9 @@ How to use sudo -h This command
 
 Installation method (Do not include in download)
 
+คัดลอกได้ตามลูกศร
+
+Copy according to the arrow.
+
 =>
 git clone https://github.com/bbgame27/k-linux.git
