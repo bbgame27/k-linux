@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🎉 เริ่มการตั้งค่า Termux Custom Shell (v2.5: ถามซ้ำจนกว่าจะตอบถูก)..."
+echo "🎉 เริ่มการตั้งค่า Termux Custom Shell (v2.6: แก้ไขภาษาใน mysudo)..."
 
 pkg update -y
 pkg install neofetch bash-completion -y
@@ -180,10 +180,10 @@ CACHE_FILE=~/.mysudo_cache
 CACHE_TIMEOUT=2592000
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-    LANG_CHOICE="2" 
+    LANG_CHOICE="1" 
 
     if [ "$LANG_CHOICE" == "1" ]; then
-        echo "mysudo (ตัวจำลอง sudo สำหรับ Termux) เวอร์ชัน 2.5"
+        echo "mysudo (ตัวจำลอง sudo สำหรับ Termux) เวอร์ชัน 2.6"
         echo "การใช้งาน: mysudo [options] command [arguments]"
         echo "---"
         echo "คำสั่งเฉพาะ"
@@ -197,7 +197,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "ตัวเลือก:"
         echo "  -h, --help    - แสดงข้อความช่วยเหลือนี้"
     else
-        echo "mysudo (Termux Custom Sudo) Version 2.5"
+        echo "mysudo (Termux Custom Sudo) Version 2.6"
         echo "Usage: mysudo [options] command [arguments]"
         echo "---"
         echo "Specific Commands"
