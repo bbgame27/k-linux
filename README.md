@@ -11,5 +11,5 @@ Installation method (Do not include in download)
 
 Copy according to the arrow.
 
-=>  
+=> 
 git clone https://github.com/bbgame27/k-linux.git
