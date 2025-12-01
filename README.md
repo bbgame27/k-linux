@@ -14,7 +14,7 @@ Copy according to the arrow.
 
 1.1
 
-pkg install git
+pkg install git -y
 
 1.2
 
