@@ -11,5 +11,12 @@ Installation method (Do not include in download)
 
 Copy according to the arrow.
 
+
+1.1
+
+pkg install git
+
+1.2
+
 => 
 git clone https://github.com/bbgame27/k-linux.git
