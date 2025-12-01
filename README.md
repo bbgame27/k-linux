@@ -14,7 +14,7 @@ Installation method
 
 1.2
 
-=> 
+
 ```git clone https://github.com/bbgame27/k-linux.git```
 
 1.3 วิธีรัน/How to run
