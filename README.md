@@ -22,7 +22,9 @@ pkg install git -y
 git clone https://github.com/bbgame27/k-linux.git
 
 1.3 วิธีรัน/How to run
+ 
 chmod +x k.sh
 
 1.4 run
+ 
 ./k.sh
