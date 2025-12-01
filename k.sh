@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🎉 เริ่มการตั้งค่า Termux Custom Shell (v2.3: Clean Version)..."
+echo "🎉 เริ่มการตั้งค่า Termux Custom Shell (v2.5: ถามซ้ำจนกว่าจะตอบถูก)..."
 
 pkg update -y
 pkg install neofetch bash-completion -y
@@ -44,19 +44,49 @@ CACHE_FILE=~/.mysudo_cache
 REQUIRED_PASSWORD_FILE=~/.mysudo_pass 
 BYPASS_KEYWORD="BYPASS_K_SET"
 
-LANG_CHOICE="1"
+echo "Select Language / เลือกภาษา:"
+echo "1) Thai (ไทย)"
+echo "2) English"
+while true; do
+    echo -n "Enter choice [1 or 2]: "
+    read LANG_CHOICE
+    
+    if [ "$LANG_CHOICE" == "1" ]; then
+        break
+    elif [ "$LANG_CHOICE" == "2" ]; then
+        break
+    else
+        echo "Invalid choice. Please select 1 or 2."
+    fi
+done
 
 if [ ! -f "$REQUIRED_PASSWORD_FILE" ]; then
     
-    echo "================================================="
-    echo "⚙️ การตั้งค่าครั้งแรก: กรุณาตั้งรหัสผ่านใหม่"
-    echo " (หรือกด k เพื่อข้ามการตั้งค่ารหัสผ่าน)"
-    echo "================================================="
-    SETUP_PROMPT_1="ตั้งรหัสผ่านใหม่ (ซ่อน):"
-    SETUP_PROMPT_2="ยืนยันรหัสผ่านใหม่ (ซ่อน):"
-    SETUP_SUCCESS="✅ ตั้งรหัสผ่านสำเร็จ"
-    SETUP_SKIP="✅ ข้ามการตั้งรหัสผ่าน" 
-    SETUP_ERROR="รหัสผ่านไม่ตรงกัน หรือว่างเปล่า กรุณาลองใหม่"
+    if [ "$LANG_CHOICE" == "1" ]; then
+        echo "================================================="
+        echo "⚙️ การตั้งค่าครั้งแรก: กรุณาตั้งรหัสผ่านใหม่"
+        echo " (หรือกด k เพื่อข้ามการตั้งค่ารหัสผ่าน)"
+        echo "================================================="
+        SETUP_PROMPT_1="ตั้งรหัสผ่านใหม่ (ซ่อน):"
+        SETUP_PROMPT_2="ยืนยันรหัสผ่านใหม่ (ซ่อน):"
+        SETUP_SUCCESS="✅ ตั้งรหัสผ่านสำเร็จ"
+        SETUP_SKIP="✅ ข้ามการตั้งรหัสผ่าน" 
+        SETUP_ERROR="รหัสผ่านไม่ตรงกัน หรือว่างเปล่า กรุณาลองใหม่"
+        ERROR_MSG="รหัสผ่านผิด กรุณาลองใหม่อีกครั้ง" 
+        BYPASS_MSG="⚠️ ข้ามการยืนยันตัวตน (Bypass) แล้ว"
+    else 
+        echo "================================================="
+        echo "⚙️ First Time Setup: Please set your new password"
+        echo " (or press k to skip password setup)"
+        echo "================================================="
+        SETUP_PROMPT_1="Set new password (hidden):"
+        SETUP_PROMPT_2="Confirm new password (hidden):"
+        SETUP_SUCCESS="✅ Password set successfully."
+        SETUP_SKIP="✅ Password setup skipped."
+        SETUP_ERROR="Passwords do not match or are empty. Please try again."
+        ERROR_MSG="Incorrect password. Please try again."
+        BYPASS_MSG="⚠️ Authentication bypassed."
+    fi
     
     while true; do
         echo -n "$SETUP_PROMPT_1 "
@@ -87,14 +117,29 @@ fi
 
 REQUIRED_PASSWORD=$(cat "$REQUIRED_PASSWORD_FILE")
 
-ERROR_MSG="รหัสผ่านผิด กรุณาลองใหม่อีกครั้ง" 
-
-if [ "$REQUIRED_PASSWORD" == "$BYPASS_KEYWORD" ]; then
-    PROMPT_LANG="รหัสผ่านเพื่อเข้าใช้งาน (กด k หรือ Enter):" 
-else
-    PROMPT_LANG="รหัสผ่านเพื่อเข้าใช้งาน:" 
+if [ -z "$ERROR_MSG" ]; then
+    if [ "$LANG_CHOICE" == "1" ]; then
+        ERROR_MSG="รหัสผ่านผิด กรุณาลองใหม่อีกครั้ง" 
+        BYPASS_MSG="⚠️ ข้ามการยืนยันตัวตน (Bypass) แล้ว"
+    else
+        ERROR_MSG="Incorrect password. Please try again."
+        BYPASS_MSG="⚠️ Authentication bypassed."
+    fi
 fi
 
+if [ "$REQUIRED_PASSWORD" == "$BYPASS_KEYWORD" ]; then
+    if [ "$LANG_CHOICE" == "1" ]; then
+        PROMPT_LANG="รหัสผ่านเพื่อเข้าใช้งาน (กด k หรือ Enter):" 
+    else
+        PROMPT_LANG="password to unlock (press k or Enter):" 
+    fi
+else
+    if [ "$LANG_CHOICE" == "1" ]; then
+        PROMPT_LANG="รหัสผ่านเพื่อเข้าใช้งาน:" 
+    else
+        PROMPT_LANG="password to unlock:" 
+    fi
+fi
 
 while true; do
     echo -n "$PROMPT_LANG "
@@ -117,7 +162,7 @@ while true; do
 
     if [ "$IS_VALID" -eq 1 ]; then
         if [ "$REQUIRED_PASSWORD" == "$BYPASS_KEYWORD" ] && ([ "$PASSWORD" == "k" ] || [ "$PASSWORD" == "K" ]); then
-            echo "⚠️ ข้ามการยืนยันตัวตน (Bypass) แล้ว"
+            echo "$BYPASS_MSG"
         fi
         
         date +%s > "$CACHE_FILE"
@@ -135,20 +180,37 @@ CACHE_FILE=~/.mysudo_cache
 CACHE_TIMEOUT=2592000
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-    echo "mysudo (ตัวจำลอง sudo สำหรับ Termux) เวอร์ชัน 2.3"
-    echo "การใช้งาน: mysudo [options] command [arguments]"
-    echo "---"
-    echo "คำสั่งเฉพาะ"
-    echo "  sudo apt <คำสั่ง>      - ใช้เพื่อจัดการแพ็คเกจ (เช่น sudo apt install)"
-    echo "  sudo git <คำสั่ง>      - เพื่อรันคำสั่ง 'git' ที่คุณติดตั้งไว้"
-    echo "---"
-    echo "ชื่อเล่น (Alias) ที่สร้างขึ้น:"
-    echo "  sudo command  - รันคำสั่งด้วยระบบปลดล็อกเซสชัน"
-    echo "  neo           - รัน neofetch (sudo neofetch)"
-    echo "---"
-    echo "ตัวเลือก:"
-    echo "  -h, --help    - แสดงข้อความช่วยเหลือนี้"
+    LANG_CHOICE="2" 
 
+    if [ "$LANG_CHOICE" == "1" ]; then
+        echo "mysudo (ตัวจำลอง sudo สำหรับ Termux) เวอร์ชัน 2.5"
+        echo "การใช้งาน: mysudo [options] command [arguments]"
+        echo "---"
+        echo "คำสั่งเฉพาะ"
+        echo "  sudo apt <คำสั่ง>      - ใช้เพื่อจัดการแพ็คเกจ (เช่น sudo apt install)"
+        echo "  sudo git <คำสั่ง>      - เพื่อรันคำสั่ง 'git' ที่คุณติดตั้งไว้"
+        echo "---"
+        echo "ชื่อเล่น (Alias) ที่สร้างขึ้น:"
+        echo "  sudo command  - รันคำสั่งด้วยระบบปลดล็อกเซสชัน"
+        echo "  neo           - รัน neofetch (sudo neofetch)"
+        echo "---"
+        echo "ตัวเลือก:"
+        echo "  -h, --help    - แสดงข้อความช่วยเหลือนี้"
+    else
+        echo "mysudo (Termux Custom Sudo) Version 2.5"
+        echo "Usage: mysudo [options] command [arguments]"
+        echo "---"
+        echo "Specific Commands"
+        echo "  sudo apt <command>    - Used to manage packages (e.g. sudo apt install)."
+        echo "  sudo git <command>    - To run the installed 'git' command."
+        echo "---"
+        echo "Custom Aliases:"
+        echo "  sudo command  - Run command with session unlock logic."
+        echo "  neo           - Run neofetch (sudo neofetch)."
+        echo "---"
+        echo "Options:"
+        echo "  -h, --help    - Display this help message and exit."
+    fi
     exit 0
 fi
 
@@ -196,4 +258,3 @@ echo "================================================="
 echo "✅ ติดตั้งสำเร็จ!"
 echo "กรุณาปิดแอป Termux แล้วเปิดใหม่"
 ================================================="
-
