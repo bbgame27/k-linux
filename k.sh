@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🎉 เริ่มการตั้งค่า Termux Custom Shell (v2.6: แก้ไขภาษาใน mysudo)..."
+echo "🎉 เริ่มการตั้งค่า Termux Custom Shell (v2.9: The Final Clean Version)..."
 
 pkg update -y
 pkg install neofetch bash-completion -y
@@ -171,6 +171,58 @@ while true; do
         echo "$ERROR_MSG"
     fi
 done
+
+install_python() {
+    echo "--- เริ่มติดตั้ง Python ---"
+    pkg install python -y
+    if [ $? -eq 0 ]; then
+        echo "✅ ติดตั้ง Python สำเร็จแล้ว"
+    else
+        echo "❌ การติดตั้ง Python ล้มเหลว"
+    fi
+}
+
+install_nmap() {
+    echo "--- เริ่มติดตั้ง Nmap ---"
+    pkg install nmap -y
+    if [ $? -eq 0 ]; then
+        echo "✅ ติดตั้ง Nmap สำเร็จแล้ว"
+    else
+        echo "❌ การติดตั้ง Nmap ล้มเหลว"
+    fi
+}
+
+while true; do
+    echo ""
+    if [ "$LANG_CHOICE" == "1" ]; then
+        echo "========== ระบบติดตั้ง =========="
+        echo "1) ติดตั้ง Python"
+        echo "2) ติดตั้ง Nmap"
+        echo "3) ติดตั้งทั้งหมด (Python + Nmap)"
+        echo "4) เข้าสู่ Shell (ข้าม)"
+        INSTALL_PROMPT_CHOICE="เลือกตัวเลือก [1-4]:"
+        INSTALL_PROMPT_INVALID="ตัวเลือกไม่ถูกต้อง กรุณาเลือก 1-4"
+    else
+        echo "========== Install System =========="
+        echo "1) Install Python"
+        echo "2) Install Nmap"
+        echo "3) Install All (Python + Nmap)"
+        echo "4) Enter Shell (Skip)"
+        INSTALL_PROMPT_CHOICE="Enter choice [1-4]:"
+        INSTALL_PROMPT_INVALID="Invalid choice. Please select 1-4"
+    fi
+    
+    echo -n "$INSTALL_PROMPT_CHOICE "
+    read INSTALL_CHOICE
+    
+    case $INSTALL_CHOICE in
+        1) install_python; break ;;
+        2) install_nmap; break ;;
+        3) install_python; install_nmap; break ;;
+        4) break ;;
+        *) echo "$INSTALL_PROMPT_INVALID" ;;
+    esac
+done
 EOF_AUTH
 chmod +x ~/authenticate_init.sh
 
@@ -183,7 +235,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     LANG_CHOICE="1" 
 
     if [ "$LANG_CHOICE" == "1" ]; then
-        echo "mysudo (ตัวจำลอง sudo สำหรับ Termux) เวอร์ชัน 2.6"
+        echo "mysudo (ตัวจำลอง sudo สำหรับ Termux) เวอร์ชัน 2.9"
         echo "การใช้งาน: mysudo [options] command [arguments]"
         echo "---"
         echo "คำสั่งเฉพาะ"
@@ -197,7 +249,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "ตัวเลือก:"
         echo "  -h, --help    - แสดงข้อความช่วยเหลือนี้"
     else
-        echo "mysudo (Termux Custom Sudo) Version 2.6"
+        echo "mysudo (Termux Custom Sudo) Version 2.9"
         echo "Usage: mysudo [options] command [arguments]"
         echo "---"
         echo "Specific Commands"
